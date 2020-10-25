@@ -11,13 +11,14 @@ declare var Phaser;
 export class HomePage {
   config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 400,
     height: 600,
     parent: 'phaser-example',
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 200 }
+        gravity: { y: 300 },
+        debug: false
       }
     },
     scene: [FirstScene]
