@@ -99,18 +99,19 @@ export class FirstScene extends Phaser.Scene {
 
         //create joystic
         this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-            x: 100,
-            y: 500,
-            radius: 15,
-            base: this.add.circle(0, 0, 30, 0x888888),
-            thumb: this.add.circle(0, 0, 15, 0xcccccc),
+            x: 200,
+            y: 700,
+            radius: 100,
+            alpha: 0.2,
+            base: this.add.circle(0, 0, 100, 0x888888),
+            thumb: this.add.circle(0, 0, 50, 0xcccccc),
             // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
             forceMin: 16,
             enable: true
         })
             .on('update', this.dumpJoyStickState, this);
 
-        this.text = this.add.text(0, 0);
+        this.text = this.add.text(4000, 4000);
         this.dumpJoyStickState();
     }
 
@@ -181,7 +182,6 @@ export class FirstScene extends Phaser.Scene {
         s += ('Force: ' + Math.floor(this.joyStick.force * 100) / 100 + '\n');
         s += ('Angle: ' + Math.floor(this.joyStick.angle * 100) / 100 + '\n');
         this.text.setText(s);
-        console.log(this.text);
     }
 
 

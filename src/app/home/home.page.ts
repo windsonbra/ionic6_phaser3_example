@@ -13,7 +13,7 @@ export class HomePage {
   config = {
     type: Phaser.AUTO,
     width: 400,
-    height: 600,
+    height: 800,
     parent: 'phaser-example',
     physics: {
       default: 'arcade',
