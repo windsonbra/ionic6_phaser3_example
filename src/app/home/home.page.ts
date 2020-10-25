@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FirstScene } from '../scenes/FirstScene';
 
+
 declare var Phaser;
 
 @Component({

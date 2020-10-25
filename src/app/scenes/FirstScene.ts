@@ -6,6 +6,7 @@ export class FirstScene extends Phaser.Scene {
     }
     score
     scoreText;
+    text
 
     preload() {
         this.load.image('sky', 'assets/sky.png');
@@ -16,6 +17,11 @@ export class FirstScene extends Phaser.Scene {
             'assets/dude.png',
             { frameWidth: 32, frameHeight: 48 }
         );
+
+        //carrega plugin rex
+        let url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
+        this.load.plugin('rexvirtualjoystickplugin', url, true);
+
     }
 
     create() {
@@ -32,7 +38,7 @@ export class FirstScene extends Phaser.Scene {
         this.platforms.create(550, 220, 'ground');
 
         //create player
-        this.player = this.physics.add.sprite(100, 450, 'dude');
+        this.player = this.physics.add.sprite(200, 450, 'dude');
 
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
@@ -90,16 +96,31 @@ export class FirstScene extends Phaser.Scene {
         this.bombs = this.physics.add.group();
         this.physics.add.collider(this.bombs, this.platforms);
         this.physics.add.collider(this.player, this.bombs, this.hitBomb, null, this);
+
+        //create joystic
+        this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
+            x: 100,
+            y: 500,
+            radius: 15,
+            base: this.add.circle(0, 0, 30, 0x888888),
+            thumb: this.add.circle(0, 0, 15, 0xcccccc),
+            // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+            forceMin: 16,
+            enable: true
+        })
+            .on('update', this.dumpJoyStickState, this);
+
+        this.text = this.add.text(0, 0);
+        this.dumpJoyStickState();
     }
 
     update() {
-
-        if (this.cursors.left.isDown) {
+        if (this.text._text.includes('left')) {
             this.player.setVelocityX(-160);
 
             this.player.anims.play('left', true);
         }
-        else if (this.cursors.right.isDown) {
+        else if (this.text._text.includes('right')) {
             this.player.setVelocityX(160);
 
             this.player.anims.play('right', true);
@@ -110,7 +131,7 @@ export class FirstScene extends Phaser.Scene {
             this.player.anims.play('turn');
         }
 
-        if (this.cursors.up.isDown && this.player.body.touching.down) {
+        if (this.text._text.includes('up') && this.player.body.touching.down) {
             this.player.setVelocityY(-330);
         }
     }
@@ -147,4 +168,21 @@ export class FirstScene extends Phaser.Scene {
 
         this.gameOver = true;
     }
+
+    dumpJoyStickState() {
+        var cursorKeys = this.joyStick.createCursorKeys();
+        var s = 'Key down: ';
+        for (var name in cursorKeys) {
+            if (cursorKeys[name].isDown) {
+                s += name + ' ';
+            }
+        }
+        s += '\n';
+        s += ('Force: ' + Math.floor(this.joyStick.force * 100) / 100 + '\n');
+        s += ('Angle: ' + Math.floor(this.joyStick.angle * 100) / 100 + '\n');
+        this.text.setText(s);
+        console.log(this.text);
+    }
+
+
 }
