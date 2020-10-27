@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Platform } from '@ionic/angular';
 import { FirstScene } from '../scenes/FirstScene';
 
 
@@ -24,7 +25,12 @@ export class HomePage {
     },
     scene: [FirstScene]
   };
-  constructor() { }
+  constructor(platform: Platform) {
+    platform.ready().then(() => {
+      this.config.width = platform.width();
+      this.config.height = platform.height();
+    });
+  }
 
   ionViewWillEnter() {
     new Phaser.Game(this.config);

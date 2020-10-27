@@ -1,13 +1,16 @@
+import { Platform } from '@ionic/angular';
+
 declare var Phaser;
 export class FirstScene extends Phaser.Scene {
-
-    constructor(config) {
-        super(config);
-    }
+    width
+    height
     score
     scoreText;
     text
 
+    constructor(config) {
+        super(config);
+    }
     preload() {
         this.load.image('sky', 'assets/sky.png');
         this.load.image('ground', 'assets/platform.png');
@@ -21,24 +24,32 @@ export class FirstScene extends Phaser.Scene {
         //carrega plugin rex
         let url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js';
         this.load.plugin('rexvirtualjoystickplugin', url, true);
-
+        this.width = this.game.config.width;
+        this.height = this.game.config.height;
     }
 
     create() {
+        let heightBackGround;
+
+        if (this.height > 700)
+            heightBackGround = this.height * 0.29;
+        else
+            heightBackGround = this.height * 0.25;
+
         //create background
-        this.add.image(400, 300, 'sky');
+        this.add.image(this.width * 0.5, heightBackGround, 'sky');
 
         //create ground
         this.platforms = this.physics.add.staticGroup();
 
-        this.platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+        this.platforms.create(this.width * 0.5, this.height * 0.7, 'ground').setScale(2).refreshBody();
 
-        this.platforms.create(400, 400, 'ground');
-        this.platforms.create(-100, 250, 'ground');
-        this.platforms.create(550, 220, 'ground');
+        this.platforms.create(this.width * 1.1, this.height * 0.5, 'ground');
+        this.platforms.create(this.width * -0.1, this.height * 0.25, 'ground');
+        this.platforms.create(this.width * 1.4, this.height * 0.35, 'ground');
 
         //create player
-        this.player = this.physics.add.sprite(200, 450, 'dude');
+        this.player = this.physics.add.sprite(this.width * 0.2, this.height * 0.5, 'dude');
 
         this.player.setBounce(0.2);
         this.player.setCollideWorldBounds(true);
@@ -72,7 +83,7 @@ export class FirstScene extends Phaser.Scene {
         //add stars
         this.stars = this.physics.add.group({
             key: 'star',
-            repeat: 5,
+            repeat: Math.trunc((this.width - 12) / 70),
             setXY: { x: 12, y: 0, stepX: 70 }
         });
 
@@ -99,12 +110,11 @@ export class FirstScene extends Phaser.Scene {
 
         //create joystic
         this.joyStick = this.plugins.get('rexvirtualjoystickplugin').add(this, {
-            x: 200,
-            y: 700,
-            radius: 100,
-            alpha: 0.2,
-            base: this.add.circle(0, 0, 100, 0x888888),
-            thumb: this.add.circle(0, 0, 50, 0xcccccc),
+            x: this.width * 0.5,
+            y: this.height * 0.85,
+            radius: this.width * 0.2,
+            base: this.add.circle(0, 0, this.width * 0.2, 0x888888),
+            thumb: this.add.circle(0, 0, this.width * 0.2 * 0.5, 0xcccccc),
             // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
             forceMin: 16,
             enable: true
